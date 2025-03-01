@@ -177,3 +177,7 @@ wsproto==1.2.0
 yarl==1.18.3
 zipp==3.21.0
 zstandard==0.23.0
+matplotlib==3.10.1
+seaborn==0.13.2
+langchain-huggingface==0.1.2
+huggingface-hub==0.28.1
