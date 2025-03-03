@@ -10,10 +10,10 @@ def initialize_vector_database(csv_path=FAQ_CSV_PATH):
 
     df = pd.read_csv(csv_path, sep=None, engine='python')
 
-    if "Question" not in df.columns or "Answer" not in df.columns:
+    if "question" not in df.columns or "answer" not in df.columns:
         raise ValueError("CSV harus memiliki kolom 'Question' dan 'Answer'.")
 
-    texts = [f"Pertanyaan: {q}\nJawaban: {a}" for q, a in zip(df["Question"], df["Answer"])]
+    texts = [f"Pertanyaan: {q}\nJawaban: {a}" for q, a in zip(df["question"], df["answer"])]
 
     embedding = HuggingFaceInferenceAPIEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2",

@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 import os
 from src.database import initialize_vector_database, load_vector_database
 from src.rag_pipeline import get_answer
@@ -8,48 +7,57 @@ from src.evaluation import evaluate_faq_model
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-st.title("💬 Chatbot FAQ dengan LangChain + Streamlit")
+st.title("💬 Chatbot FAQ with LangChain + Streamlit")
 
-uploaded_file = st.file_uploader("📂 Upload file CSV berisi FAQ", type=["csv"])
+uploaded_file = st.file_uploader("📂 Upload a CSV file containing FAQs", type=["csv"])
 
 if uploaded_file:
     with open(FAQ_CSV_PATH, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-    st.write("🔄 Memproses database vektor...")
+    st.write("🔄 Processing vector database...")
     initialize_vector_database(FAQ_CSV_PATH)
-    st.success("✅ FAQ berhasil diproses! Chatbot siap digunakan.")
+    st.success("✅ FAQ successfully processed! The chatbot is ready to use.")
 
 if os.path.exists(VECTOR_DB_PATH):
-    st.write("✅ Database vektor ditemukan! Silakan mulai bertanya.")
+    st.write("✅ Vector database found! You can start asking questions.")
 
-    question = st.text_input("❓ Masukkan pertanyaan:")
+    use_rag = st.toggle("🔄 Use RAG", value=True)
+
+    question = st.text_input("❓ Enter your question:")
 
     if question:
-        answer = get_answer(question)
-        st.write(f"💬 **Jawaban:** {answer['result']}")
+        with st.spinner("🔄 Generating answer..."):
+            answer = get_answer(question, use_rag)
 
-st.title("📊 Evaluasi Chatbot FAQ")
+        st.success("✅ Answer generated!")
 
-if st.button("🔍 Evaluasi Model"):
+        if isinstance(answer, dict):
+            st.write(f"💬 **Answer:** {answer['result']}")
+        else:
+            st.write(f"💬 **Answer:** {answer}")
+
+st.title("📊 FAQ Chatbot Evaluation")
+
+if st.button("🔍 Evaluate Model"):
     st.write("🔄 Evaluating...")
 
-    # Panggil fungsi evaluasi
+    # Call the evaluation function
     report_df, similarity_gemini, similarity_rag = evaluate_faq_model()
 
-    # Tampilkan classification report
-    st.subheader("📌 Metrik Evaluasi")
+    # Display classification report
+    st.subheader("📌 Evaluation Metrics")
     st.dataframe(report_df)
 
-    # Visualisasi distribusi cosine similarity
-    st.subheader("📊 Distribusi Cosine Similarity")
+    # Visualize cosine similarity distribution
+    st.subheader("📊 Cosine Similarity Distribution")
 
     fig, ax = plt.subplots(figsize=(6, 4))
     sns.histplot(similarity_gemini, bins=20, kde=True, color="blue", label="Gemini")
     sns.histplot(similarity_rag, bins=20, kde=True, color="green", label="Gemini + RAG")
     plt.axvline(0.8, color="red", linestyle="--", label="Threshold 0.8")
     plt.xlabel("Cosine Similarity")
-    plt.ylabel("Frekuensi")
-    plt.title("Distribusi Cosine Similarity antara Ground Truth dan Prediksi")
+    plt.ylabel("Frequency")
+    plt.title("Cosine Similarity Distribution between Ground Truth and Predictions")
     plt.legend()
     st.pyplot(fig)

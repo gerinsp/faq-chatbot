@@ -1,4 +1,6 @@
-Question,Answer
-"Bagaimana cara refund tiket?","Untuk refund tiket, silakan hubungi customer service kami melalui email support@domain.com."
-"Berapa lama waktu pengiriman?","Waktu pengiriman biasanya 3-5 hari kerja tergantung lokasi."
-"Apakah bisa bayar dengan PayPal?","Saat ini kami belum mendukung pembayaran melalui PayPal."
+question,answer
+What is your refund policy?,Our refund policy allows refunds within 30 days.
+How can I reset my password?,You can reset your password by clicking 'Forgot Password' on the login page.
+Do you offer international shipping?,"Yes, we ship worldwide. Shipping fees apply."
+How do I contact customer support?,You can reach us via email at support@example.com.
+What payment methods do you accept?,"We accept Visa, MasterCard, PayPal, and Apple Pay."
